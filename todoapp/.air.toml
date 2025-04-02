@@ -1,0 +1,11 @@
+[build]
+bin = "./tmp/main"
+cmd = "go build -o ./tmp/main ./cmd/todoapp/."
+log = "stdout"
+
+[run]
+cmd = "./tmp/main"
+
+[screen]
+clear_on_rebuild = true
+keep_scroll = true
