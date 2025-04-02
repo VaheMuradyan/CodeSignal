@@ -8,5 +8,6 @@ import (
 func SetupRouter() *gin.Engine{
 	r := gin.Default()
 	r.GET("/api/todos/:id", controllers.GetTodoById)
+	r.GET("/api/todos", controllers.GetTodos)
 	return r
 }

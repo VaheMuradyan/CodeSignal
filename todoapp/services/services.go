@@ -15,3 +15,19 @@ func FindTodoById(id int) (models.Todo, bool){
 	}
 	return models.Todo{}, false
 }
+
+func FilterTodos(completed *bool) []models.Todo{
+	var filtredTodos []models.Todo
+
+	if completed == nil {
+		return todos
+	}
+
+	for _, td := range todos{
+		if td.Completed == *completed{
+			filtredTodos = append(filtredTodos, td)
+		}
+	}
+
+	return filtredTodos
+}
