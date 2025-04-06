@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"path/filepath"
 
 	"codesignal.com/example/gin/todoapp/models"
 	"codesignal.com/example/gin/todoapp/utils"
@@ -83,4 +84,52 @@ func AddTodoService(newTodo models.Todo) (models.Todo, error) {
 	newTodo.ID = len(todos) + 1
 	todos = append(todos, newTodo)
 	return newTodo, nil
+}
+
+func UploadTodoImage(c *gin.Context, id int) error {
+	todo, err := findTodoByID(todos, id)
+	if err != nil {
+		return err
+	}
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		return errors.New("No file uploaded")
+	}
+
+	fileName := filepath.Base(file.Filename)
+	filePath := filepath.Join("uploads", fileName)
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		return errors.New("Failed to save file")
+	}
+
+	todo.ImagePath = filePath
+	return nil
+}
+
+func GetTodoImage(c *gin.Context, id int) error {
+	todo, err := findTodoByID(todos, id)
+	if err != nil {
+		return err
+	}
+
+	if todo.ImagePath != "" {
+		c.File(todo.ImagePath)
+		return nil
+	}
+
+	return errors.New("Image not found")
+}
+
+func getTodos() []models.Todo {
+	return todos
+}
+
+func findTodoByID(todos []models.Todo, id int) (*models.Todo, error) {
+	for i := range todos {
+		if todos[i].ID == id {
+			return &todos[i], nil
+		}
+	}
+	return nil, errors.New("Todo not found")
 }

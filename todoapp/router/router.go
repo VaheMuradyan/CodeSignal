@@ -12,4 +12,6 @@ func SetupRouter(r *gin.Engine) {
 	r.GET("/api/todos", controllers.GetTodos)
 	r.POST("/api/todos", controllers.CreateTodo2)
 	r.POST("/api/todos/bulk", controllers.BulkUploadTodos)
+	r.POST("/api/todos/:id/image", controllers.UploadImage)
+	r.GET("/api/todos/:id/image", controllers.GetImage)
 }
