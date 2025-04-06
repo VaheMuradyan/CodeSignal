@@ -87,7 +87,7 @@ func AddTodoService(newTodo models.Todo) (models.Todo, error) {
 }
 
 func UploadTodoImage(c *gin.Context, id int) error {
-	todo, err := findTodoByID(todos, id)
+	todo, err := findTodoByID(id)
 	if err != nil {
 		return err
 	}
@@ -108,7 +108,7 @@ func UploadTodoImage(c *gin.Context, id int) error {
 }
 
 func GetTodoImage(c *gin.Context, id int) error {
-	todo, err := findTodoByID(todos, id)
+	todo, err := findTodoByID(id)
 	if err != nil {
 		return err
 	}
@@ -125,7 +125,7 @@ func getTodos() []models.Todo {
 	return todos
 }
 
-func findTodoByID(todos []models.Todo, id int) (*models.Todo, error) {
+func findTodoByID(id int) (*models.Todo, error) {
 	for i := range todos {
 		if todos[i].ID == id {
 			return &todos[i], nil
