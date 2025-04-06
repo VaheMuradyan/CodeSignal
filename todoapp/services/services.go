@@ -1,6 +1,8 @@
 package services
 
 import (
+	"errors"
+
 	"codesignal.com/example/gin/todoapp/models"
 	"codesignal.com/example/gin/todoapp/utils"
 	"github.com/gin-gonic/gin"
@@ -66,4 +68,19 @@ func AddTodos(todos *[]models.Todo, newTodos []models.Todo) []models.Todo {
 		*todos = append(*todos, newTodos[i])
 	}
 	return newTodos
+}
+
+func FindTodoByID2(id int) (models.Todo, error) {
+	for _, todo := range todos {
+		if todo.ID == id {
+			return todo, nil
+		}
+	}
+	return models.Todo{}, errors.New("Todo not found")
+}
+
+func AddTodoService(newTodo models.Todo) (models.Todo, error) {
+	newTodo.ID = len(todos) + 1
+	todos = append(todos, newTodo)
+	return newTodo, nil
 }

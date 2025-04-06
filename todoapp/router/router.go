@@ -8,8 +8,8 @@ import (
 
 func SetupRouter(r *gin.Engine) {
 	utils.RegisterValidators()
-	r.GET("/api/todos/:id", controllers.GetTodoById)
+	r.GET("/api/todos/:id", controllers.GetTodo)
 	r.GET("/api/todos", controllers.GetTodos)
-	r.POST("/api/todos", controllers.CreateTodo)
+	r.POST("/api/todos", controllers.CreateTodo2)
 	r.POST("/api/todos/bulk", controllers.BulkUploadTodos)
 }

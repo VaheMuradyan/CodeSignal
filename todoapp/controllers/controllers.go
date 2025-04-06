@@ -70,3 +70,35 @@ func BulkUploadTodos(c *gin.Context) {
 	c.JSON(http.StatusCreated, addedTodos)
 
 }
+
+func GetTodo(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	todo, err := services.FindTodoByID2(id)
+	if err != nil {
+		c.AbortWithError(http.StatusNotFound, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, todo)
+}
+
+func CreateTodo2(c *gin.Context) {
+	var newTodo models.Todo
+	if err := c.ShouldBindJSON(&newTodo); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	todo, err := services.AddTodoService(newTodo)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, todo)
+}
