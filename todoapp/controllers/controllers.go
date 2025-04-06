@@ -4,9 +4,13 @@ import (
 	"net/http"
 	"strconv"
 
+	"codesignal.com/example/gin/todoapp/models"
 	"codesignal.com/example/gin/todoapp/services"
+	"codesignal.com/example/gin/todoapp/utils"
 	"github.com/gin-gonic/gin"
 )
+
+var todos = make([]models.Todo, 0)
 
 func GetTodoById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
@@ -46,4 +50,23 @@ func CreateTodo(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, newTodo)
+}
+
+func BulkUploadTodos(c *gin.Context) {
+	var newTodos []models.Todo
+
+	if err := c.ShouldBindJSON(&newTodos); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid json payload"})
+		return
+	}
+
+	dublicates := utils.CheckForDuplicates(newTodos)
+	if len(dublicates) > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Dublicate todos found", "dublicates": dublicates})
+		return
+	}
+
+	addedTodos := services.AddTodos(&todos, newTodos)
+	c.JSON(http.StatusCreated, addedTodos)
+
 }

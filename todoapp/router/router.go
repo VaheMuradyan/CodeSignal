@@ -6,11 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter() *gin.Engine {
-	r := gin.Default()
+func SetupRouter(r *gin.Engine) {
 	utils.RegisterValidators()
 	r.GET("/api/todos/:id", controllers.GetTodoById)
 	r.GET("/api/todos", controllers.GetTodos)
 	r.POST("/api/todos", controllers.CreateTodo)
-	return r
+	r.POST("/api/todos/bulk", controllers.BulkUploadTodos)
 }

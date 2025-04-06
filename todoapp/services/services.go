@@ -6,10 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var todos = []models.Todo{
-	{ID: 1, Title: "Learn Go", Completed: false},
-	{ID: 2, Title: "Master Gin", Completed: true},
-}
+var (
+	todos = []models.Todo{
+		{ID: 1, Title: "Learn Go", Completed: false},
+		{ID: 2, Title: "Master Gin", Completed: true},
+	}
+	idCounter int
+)
 
 func AddTodo(c *gin.Context) (models.Todo, map[string]string) {
 	var newTodo models.Todo
@@ -18,7 +21,8 @@ func AddTodo(c *gin.Context) (models.Todo, map[string]string) {
 	if err := c.ShouldBindJSON(&newTodo); err != nil {
 		validationErrors = utils.EnhancedErrorMessages(err)
 	} else {
-		newTodo.ID = len(todos) + 1
+		idCounter++
+		newTodo.ID = idCounter
 		todos = append(todos, newTodo)
 	}
 
@@ -52,4 +56,14 @@ func FilterTodos(completed *bool) []models.Todo {
 	}
 
 	return filtredTodos
+}
+
+func AddTodos(todos *[]models.Todo, newTodos []models.Todo) []models.Todo {
+	startId := len(*todos)
+
+	for i, _ := range newTodos {
+		newTodos[i].ID = startId + 1 + i
+		*todos = append(*todos, newTodos[i])
+	}
+	return newTodos
 }
