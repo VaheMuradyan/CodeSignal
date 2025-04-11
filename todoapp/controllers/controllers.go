@@ -8,6 +8,7 @@ import (
 	"codesignal.com/example/gin/todoapp/services"
 	"codesignal.com/example/gin/todoapp/utils"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 var todos = make([]models.Todo, 0)
@@ -43,7 +44,7 @@ func GetTodos(c *gin.Context) {
 }
 
 func CreateTodo(c *gin.Context) {
-	newTodo, err := services.AddTodo(c)
+	newTodo, err := services.AddTodo2(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
@@ -131,4 +132,24 @@ func GetImage(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
+}
+
+func GetTodosHandler(c *gin.Context, db *gorm.DB) {
+	todos := services.GetTodos(db)
+	c.JSON(http.StatusOK, todos)
+}
+
+func CreateTodoHandler(c *gin.Context, db *gorm.DB) {
+	var newTodo models.Todo
+	if err := c.ShouldBindJSON(&newTodo); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+	createdTodo := services.AddTodo(db, newTodo)
+	c.JSON(http.StatusCreated, createdTodo)
+}
+
+func ResetTodosHandler(c *gin.Context, db *gorm.DB) {
+	services.ResetAllTodos(db)
+	c.Status(http.StatusOK)
 }

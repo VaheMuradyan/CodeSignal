@@ -5,8 +5,10 @@ import (
 	"path/filepath"
 
 	"codesignal.com/example/gin/todoapp/models"
+	todorepository "codesignal.com/example/gin/todoapp/repositories/todo_repository"
 	"codesignal.com/example/gin/todoapp/utils"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 var (
@@ -17,7 +19,7 @@ var (
 	idCounter int
 )
 
-func AddTodo(c *gin.Context) (models.Todo, map[string]string) {
+func AddTodo2(c *gin.Context) (models.Todo, map[string]string) {
 	var newTodo models.Todo
 	var validationErrors map[string]string
 
@@ -132,4 +134,16 @@ func findTodoByID(id int) (*models.Todo, error) {
 		}
 	}
 	return nil, errors.New("Todo not found")
+}
+func GetTodos(db *gorm.DB) []models.Todo {
+	return todorepository.FindAllTodos(db)
+}
+
+func AddTodo(db *gorm.DB, newTodo models.Todo) models.Todo {
+	newTodo.Completed = false
+	return todorepository.CreateTodo(db, newTodo)
+}
+
+func ResetAllTodos(db *gorm.DB) {
+	todorepository.ResetTodos(db)
 }
